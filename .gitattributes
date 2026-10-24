@@ -3,3 +3,5 @@
 *.jpg binary
 *.jpeg binary
 *.ico binary
+# La licencia de la fuente conserva los bytes del archivo oficial, incluido su formato.
+public/fonts/italianno/OFL.txt -text -whitespace

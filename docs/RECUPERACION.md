@@ -33,6 +33,8 @@ Se eligió **application** por sus funcionalidades y evolución. No era necesari
 | `original-2021`          | `6bc8d07e0305dbf04689936f29cd357b06a0ebd5` | Último árbol publicado del repositorio original, de octubre de 2021                         |
 | `ultimo-despliegue-2021` | `dd804bc0ba31edc7b82079986a71ce113edb651c` | Última revisión de esta secuencia con despliegue de producción informado como satisfactorio |
 
+La rama `demo-modernizada` conserva la primera demostración de la recuperación, en `45790cb`, que utilizaba otra composición visual. La rama `main` vuelve a tomar los estilos y la estructura visual de `original-2021` como referencia y mantiene las adaptaciones de datos locales necesarias para recorrer el proyecto.
+
 El despliegue de `dd804bc` se creó el **13 de octubre de 2021 a las 00:23:52 UTC** y su estado público es `success`. Los siete despliegues posteriores consultados, desde `bf6044f` hasta `6bc8d07`, tienen estado `failure`.
 
 Evidencias públicas: [estado del último despliegue satisfactorio](https://api.github.com/repos/gautierrgautier/application/deployments/437027742/statuses), [primer fallo posterior](https://api.github.com/repos/gautierrgautier/application/deployments/438775201/statuses) y [estado del último commit original](https://api.github.com/repos/gautierrgautier/application/deployments/440804679/statuses).
@@ -59,7 +61,8 @@ La recuperación no reutiliza esa infraestructura automáticamente. La demo func
 
 ## Qué conserva y qué cambia la recuperación
 
-- Conserva la historia Git, los créditos, las categorías, la estética y los recursos visuales disponibles del proyecto de 2021.
+- Conserva la historia Git, los créditos, las categorías y los recursos visuales disponibles del proyecto de 2021.
+- Recupera los estilos originales y la composición gris del interior, la portada fotográfica, los carruseles y los modales por `:target`.
 - Repara la estructura de importaciones y organiza la carga de recetas mediante un proveedor compartido.
 - Añade estados de carga, error y ausencia de resultados para evitar depender de que siempre existan recetas.
 - Actualiza las dependencias y herramientas, manteniendo Pages Router y los estilos Sass por componente.
@@ -68,6 +71,31 @@ La recuperación no reutiliza esa infraestructura automáticamente. La demo func
 - Incluye comprobaciones de formato, lint, compilación y pruebas de la lógica de recetas.
 
 La selección de destacados conserva un criterio sencillo de ordenación por nombre; no se atribuyen valoraciones o actividad social que no se hayan implementado.
+
+## Fidelidad visual y adaptaciones de la demo
+
+La referencia visual es `application` en `6bc8d07`, cuya interfaz final se incorporó principalmente en `bf6044f`. No se toma el rediseño de la primera demo como prueba de cómo era la aplicación de 2021.
+
+| Elemento              | Evidencia histórica que se recupera                                                                                         |
+| --------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| Portada               | `Index.module.scss`: `wallpaper.jpg`, degradado hacia negro, marca roja en Italianno, tamaño `40vh` y sombra blanca         |
+| Interior              | `styles/global/style.scss`: fondo `rgb(20,20,20)`, equivalente a `#141414`, y tipografía del sistema                        |
+| Controles y paneles   | Superficies `rgb(30,30,30)`, equivalentes a `#1e1e1e`, bordes, sombras negras y esquinas redondeadas                        |
+| Destacados y catálogo | Franjas horizontales desplazables; destacados con fotografía de fondo y tarjetas generales con imagen, nombre, autor y tipo |
+| Modales               | Fragmentos de URL, selectores `:target`, overlay negro y panel gris en los estilos de receta, usuario y formulario          |
+| Interacciones         | Transiciones CSS de `333ms`, hover y apariciones de Motion con retardos históricos                                          |
+
+El código histórico declara `duration: 0` en las apariciones de Motion. Se conserva ese comportamiento: los elementos aparecen tras sus retardos, sin atribuirles una interpolación suave de escala que no ejecutaba aquella versión. Los estilos CSS aportan las transiciones de interacción.
+
+El botón de acceso recupera el texto `Log In`. En modo demo enlaza con el interior mediante una sesión local; no abre Google ni crea una cuenta externa. El perfil sigue situado en los controles superiores. Los ejemplos se construyeron para probar catálogo, categorías y detalle, y no proceden de una copia de la base de datos histórica.
+
+### Mis recetas
+
+La recuperación incorpora `/home/mis-recetas` para revisar las recetas publicadas localmente. Utiliza `styles/database/GetUser.module.scss`, un archivo que sí existía en el árbol original.
+
+No se encontró `GetUser.jsx`, `GetUser.js`, una página de perfil con listado propio ni una consulta por autor en el historial público revisado. El formulario histórico guardaba `idAuthor`, pero eso no prueba que la vista estuviera terminada. Por tanto, **Mis recetas es una adaptación de demostración**, no un listado original que se hubiera recuperado. Se añade para probar las publicaciones propias manteniendo el lenguaje visual de los estilos disponibles.
+
+Las adaptaciones funcionales de la recuperación incluyen datos de ejemplo, persistencia en `localStorage`, validación, estados vacíos y mensajes de carga o error. Los identificadores, URLs y servicios de 2021 no se reactivan por conservar su interfaz.
 
 ## Imágenes del README
 

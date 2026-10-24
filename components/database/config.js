@@ -26,6 +26,7 @@ export async function fetchCloudRecipes() {
       id: document.id,
       name: text(record.name) || "Receta sin nombre",
       author: text(record.author) || "Autor sin nombre",
+      idAuthor: text(record.idAuthor),
       description: text(record.description),
       ingredients: text(record.ingredients),
       howTo: text(record.howTo),

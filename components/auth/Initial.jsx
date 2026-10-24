@@ -7,13 +7,13 @@ export default function Initial() {
   const session = useSession();
   if (session.isLoading)
     return (
-      <main className="status-page" role="status">
+      <main style={{ color: "white", textAlign: "center", padding: 40 }} role="status">
         Cargando tu sesión...
       </main>
     );
   if (session.error)
     return (
-      <main className="status-page">
+      <main style={{ color: "white", textAlign: "center", padding: 40 }}>
         <h1>No pudimos iniciar sesión</h1>
         <p>Revisa la configuración de Auth0 y vuelve a intentarlo.</p>
         <LoginButton />
@@ -21,7 +21,7 @@ export default function Initial() {
     );
   if (!session.isAuthenticated)
     return (
-      <main className="status-page">
+      <main style={{ color: "white", textAlign: "center", padding: 40 }}>
         <h1>Bienvenido a Recepy</h1>
         <LoginButton />
       </main>

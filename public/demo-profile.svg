@@ -1,0 +1,6 @@
+<!-- Avatar de prueba; no representa a un usuario de la base de datos original. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120">
+  <rect width="120" height="120" fill="#1e1e1e"/>
+  <circle cx="60" cy="42" r="21" fill="#969696"/>
+  <path d="M18 118c0-31 15-47 42-47s42 16 42 47" fill="#969696"/>
+</svg>

@@ -1,6 +1,14 @@
+//Importacion de los componentes
 import Initial from "../../components/auth/Initial";
 
-// El proveedor Auth0 vive en _app, sin reiniciarse en cada página.
-export default function Lobby() {
-  return <Initial />;
-}
+//Componente lobby, donde se renderiza la toda nuestra pagina
+const Lobby = () => {
+  return (
+    <>
+      <Initial />
+    </>
+  );
+};
+
+//Exportacion de el componente Lobby
+export default Lobby;

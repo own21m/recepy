@@ -4,27 +4,24 @@ import { useRecipes } from "./RecipesProvider";
 import { CATEGORIES, MAX_IMAGE_BYTES, validateRecipe } from "../../lib/recipes.mjs";
 import style from "../../styles/database/Add.module.scss";
 
-const initialValues = {
-  name: "",
-  type: "",
-  description: "",
-  ingredients: "",
-  howTo: "",
-  video: "",
-};
-
-// En demo se guarda una imagen pequeña. Los vídeos son enlaces, no archivos pesados.
+// Se recuperan el orden, los controles y las clases del formulario de 2021.
+// En la demo las recetas se guardan en este navegador, sin subir archivos a Firebase.
 export default function Add({ onSaved }) {
   const { addRecipe, isDemo } = useRecipes();
   const [image, setImage] = useState("");
   const [fileError, setFileError] = useState("");
   const [fileLoading, setFileLoading] = useState(false);
   const [submitError, setSubmitError] = useState("");
-  const imageInput = useRef(null);
-  async function readImage(event) {
+  const input = useRef(null);
+  const readVersion = useRef(0);
+
+  // Una miniatura pequeña mantiene la demostración dentro de la cuota del navegador.
+  async function fileStore(event) {
+    const version = ++readVersion.current;
+    const file = event.target.files?.[0];
     setImage("");
     setFileError("");
-    const file = event.target.files?.[0];
+    setFileLoading(false);
     if (!file) return;
     if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)) {
       setFileError("Elige una imagen JPEG, PNG, WebP o GIF.");
@@ -36,35 +33,44 @@ export default function Add({ onSaved }) {
     }
     setFileLoading(true);
     try {
-      const value = await new Promise((resolve, reject) => {
+      const result = await new Promise((resolve, reject) => {
         const reader = new FileReader();
         reader.onload = () => resolve(reader.result);
         reader.onerror = () => reject(new Error("No se pudo leer la imagen."));
         reader.readAsDataURL(file);
       });
-      setImage(value);
+      if (version === readVersion.current) setImage(result);
     } catch {
-      setFileError("No se pudo leer la imagen. Prueba con otro archivo.");
+      if (version === readVersion.current) setFileError("No se pudo leer la imagen.");
     } finally {
-      setFileLoading(false);
+      if (version === readVersion.current) setFileLoading(false);
     }
   }
-  if (!isDemo)
+
+  if (!isDemo) {
     return (
-      <p className="notice">
-        Esta recuperación permite consultar Firebase. Publicar en la nube requiere
-        configurar un backend que autorice la identidad de Auth0 en Firebase; no se envían
-        escrituras con la sesión del navegador.
+      <p>
+        La publicación en la nube requiere configurar un backend que autorice Firebase.
+        Esta recuperación permite consultar recetas y crear ejemplos locales.
       </p>
     );
+  }
+
   return (
     <section className={style.wrapper}>
-      <p className={style.note}>
-        Demo local. Tu receta se guardará solo en este navegador. Una imagen y un vídeo
-        son opcionales.
+      <p>
+        Demostración local: las recetas se guardan solo en este navegador. La miniatura y
+        el vídeo son opcionales.
       </p>
       <Formik
-        initialValues={initialValues}
+        initialValues={{
+          name: "",
+          type: "",
+          description: "",
+          howTo: "",
+          ingredients: "",
+          video: "",
+        }}
         validate={validateRecipe}
         onSubmit={async (values, helpers) => {
           setSubmitError("");
@@ -72,6 +78,8 @@ export default function Add({ onSaved }) {
             addRecipe(values, image);
             helpers.resetForm();
             setImage("");
+            if (input.current) input.current.value = "";
+            window.location.hash = "";
             onSaved?.();
           } catch (problem) {
             setSubmitError(problem.message);
@@ -82,10 +90,18 @@ export default function Add({ onSaved }) {
       >
         {({ isSubmitting }) => (
           <Form className={style.item} noValidate>
-            <label htmlFor="recipe-name">Nombre de la receta</label>
-            <Field id="recipe-name" name="name" type="text" maxLength={100} required />
-            <ErrorMessage name="name" component="p" className={style.error} />
-            <label htmlFor="recipe-description">¿De qué se trata?</label>
+            <label htmlFor="recipe-name">Nombra tu receta</label>
+            <Field
+              id="recipe-name"
+              name="name"
+              type="text"
+              className={style.effect}
+              maxLength={100}
+              required
+            />
+            <ErrorMessage name="name" component="p" />
+
+            <label htmlFor="recipe-description">¿De qué se trata tu receta?</label>
             <Field
               id="recipe-description"
               name="description"
@@ -93,17 +109,9 @@ export default function Add({ onSaved }) {
               maxLength={6000}
               required
             />
-            <ErrorMessage name="description" component="p" className={style.error} />
-            <label htmlFor="recipe-ingredients">Ingredientes</label>
-            <Field
-              id="recipe-ingredients"
-              name="ingredients"
-              as="textarea"
-              maxLength={6000}
-              required
-            />
-            <ErrorMessage name="ingredients" component="p" className={style.error} />
-            <label htmlFor="recipe-howto">Paso a paso</label>
+            <ErrorMessage name="description" component="p" />
+
+            <label htmlFor="recipe-howto">¿Cómo se hace tu receta?</label>
             <Field
               id="recipe-howto"
               name="howTo"
@@ -111,67 +119,87 @@ export default function Add({ onSaved }) {
               maxLength={6000}
               required
             />
-            <ErrorMessage name="howTo" component="p" className={style.error} />
-            <label htmlFor="recipe-type">Categoría</label>
-            <Field id="recipe-type" name="type" as="select" required>
-              <option value="">Elige una categoría</option>
+            <ErrorMessage name="howTo" component="p" />
+
+            <label htmlFor="recipe-ingredients">¿Qué ingredientes tiene tu receta?</label>
+            <Field
+              id="recipe-ingredients"
+              name="ingredients"
+              as="textarea"
+              maxLength={6000}
+              required
+            />
+            <ErrorMessage name="ingredients" component="p" />
+
+            <label htmlFor="recipe-image">Selecciona una miniatura para tu receta</label>
+            <input
+              id="recipe-image"
+              ref={input}
+              name="file"
+              type="file"
+              onChange={fileStore}
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              className={style.effect}
+              aria-describedby="recipe-image-note"
+            />
+            <p id="recipe-image-note">
+              Opcional, máximo 1 MB. Si no eliges una imagen, se usará la fotografía de
+              portada.
+            </p>
+            {fileLoading ? <p role="status">Leyendo imagen...</p> : null}
+            {fileError ? <p role="alert">{fileError}</p> : null}
+            {image || fileError ? (
+              <button
+                type="button"
+                className={style.effect}
+                onClick={() => {
+                  readVersion.current += 1;
+                  setImage("");
+                  setFileError("");
+                  setFileLoading(false);
+                  if (input.current) input.current.value = "";
+                }}
+              >
+                Quitar imagen y usar portada
+              </button>
+            ) : null}
+
+            <label htmlFor="recipe-video">Enlace a un vídeo para tu receta</label>
+            <Field
+              id="recipe-video"
+              name="video"
+              type="url"
+              className={style.effect}
+              placeholder="https://..."
+            />
+            <p>
+              Vídeo opcional en formato MP4 o WebM; la demo no sube archivos de vídeo.
+            </p>
+            <ErrorMessage name="video" component="p" />
+
+            <label htmlFor="recipe-type">¿De qué tipo es tu receta?</label>
+            <Field
+              id="recipe-type"
+              name="type"
+              as="select"
+              required
+              className={style.effect}
+            >
+              <option value="">Elige el tipo de tu receta</option>
               {CATEGORIES.map((category) => (
                 <option key={category} value={category}>
                   {category === "Pasteleria" ? "Pastelería" : category}
                 </option>
               ))}
             </Field>
-            <ErrorMessage name="type" component="p" className={style.error} />
-            <label htmlFor="recipe-image">Imagen (opcional, máximo 1 MB)</label>
-            <input
-              id="recipe-image"
-              ref={imageInput}
-              type="file"
-              accept="image/jpeg,image/png,image/webp,image/gif"
-              onChange={readImage}
-              aria-describedby="image-note"
-            />
-            <p id="image-note" className={style.note}>
-              Si no eliges una imagen, se usará la fotografía de portada del proyecto.
-            </p>
-            {fileLoading ? <p role="status">Leyendo imagen...</p> : null}
-            {fileError ? (
-              <p className={style.error} role="alert">
-                {fileError}
-              </p>
-            ) : null}
-            {image ? (
-              <img
-                src={image}
-                alt="Vista previa de tu receta"
-                className={style.preview}
-              />
-            ) : null}
-            {image || fileError ? (
-              <button
-                type="button"
-                onClick={() => {
-                  setImage("");
-                  setFileError("");
-                  if (imageInput.current) imageInput.current.value = "";
-                }}
-              >
-                Quitar imagen y usar portada
-              </button>
-            ) : null}
-            <label htmlFor="recipe-video">Enlace a un vídeo (opcional, MP4 o WebM)</label>
-            <Field id="recipe-video" name="video" type="url" placeholder="https://..." />
-            <ErrorMessage name="video" component="p" className={style.error} />
-            {submitError ? (
-              <p className={style.error} role="alert">
-                {submitError}
-              </p>
-            ) : null}
+            <ErrorMessage name="type" component="p" />
+            {submitError ? <p role="alert">{submitError}</p> : null}
             <button
               type="submit"
+              className={style.effect}
               disabled={isSubmitting || fileLoading || Boolean(fileError)}
             >
-              {isSubmitting ? "Guardando..." : "Guardar receta en este navegador"}
+              {isSubmitting ? "Guardando..." : "Guardar receta"}
             </button>
           </Form>
         )}

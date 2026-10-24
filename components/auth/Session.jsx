@@ -9,7 +9,7 @@ const appUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 const demoUser = {
   name: "Visitante de demostración",
   email: "Perfil local, sin cuenta",
-  picture: "",
+  picture: "/demo-profile.svg",
 };
 
 // Auth0 conserva su sesión en un proveedor global, también al cambiar de ruta.

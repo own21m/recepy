@@ -1,44 +1,21 @@
-// La marca roja y la fotografía de comida recuperan la identidad de la portada de 2021.
+@import url("https://fonts.googleapis.com/css2?family=Italianno&display=swap");
+
 .wall {
-  min-height: 80vh;
-  padding: 80px 24px 64px;
   background:
-    linear-gradient(180deg, #0005, #000e),
-    url("/wallpaper.jpg") center / cover;
+    linear-gradient(to bottom, transparent, rgb(0, 0, 0)), url("/wallpaper.jpg");
+  height: 80vh;
+  background-position: center;
+  background-size: cover;
   display: flex;
   flex-direction: column;
+  justify-content: flex-end;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  gap: 24px;
-}
-.wall h1 {
-  font-family: Georgia, "Times New Roman", serif;
-  font-style: italic;
-  font-size: clamp(5rem, 18vw, 13rem);
-  color: #e3453f;
-  text-shadow: 3px 3px 0 #f8e4d6;
-  margin: 0;
-  line-height: 1.1;
-  letter-spacing: -0.07em;
-}
-.eyebrow {
-  font-size: 0.75rem;
-  letter-spacing: 0.3em;
-  color: #f2c4a8;
-  font-weight: 700;
-  margin: 0;
-}
-.intro {
-  font-size: clamp(1.15rem, 3vw, 1.6rem);
-  max-width: 500px;
-  margin: 0;
-  line-height: 1.5;
-}
-.note {
-  max-width: 520px;
-  color: #c8bbb1;
-  font-size: 0.85rem;
-  line-height: 1.7;
-  margin: 0;
+
+  h1 {
+    font-family: "Italianno", cursive;
+    color: rgb(255, 0, 0);
+    font-size: 40vh;
+    text-shadow: 10px 5px 0px rgb(255, 255, 255);
+    user-select: none;
+  }
 }

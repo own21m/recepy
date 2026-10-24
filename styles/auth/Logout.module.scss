@@ -1,14 +1,19 @@
-// Cierre de sesión o regreso a la portada según el modo activo.
 .button {
-  display: inline-block;
-  padding: 13px 22px;
-  border: 1px solid #706057;
+  background-color: rgb(255, 0, 0);
+  border: none;
   border-radius: 10px;
-  background: #252120;
-  color: #f5eee9;
-  text-decoration: none;
-  text-align: center;
-}
-.button:hover {
-  background: #39302b;
+  padding: 10px;
+  width: 15vw;
+  font-weight: bold;
+  font-size: 3vh;
+  cursor: pointer;
+  transition: 333ms;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+
+  &:active {
+    background-color: rgb(200, 200, 200);
+  }
 }

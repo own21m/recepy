@@ -1,15 +1,21 @@
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { useSession } from "./Session";
 import style from "../../styles/auth/Logout.module.scss";
 
 // Auth0 utiliza logoutParams; la demo solo vuelve a la portada.
 export default function LogoutButton() {
   const session = useSession();
+  const router = useRouter();
   if (session.isDemo)
     return (
-      <Link href="/" className={style.button}>
-        Volver a la portada
-      </Link>
+      <button
+        type="button"
+        className={style.button}
+        onClick={() => router.push("/")}
+        title="Volver a la portada de prueba"
+      >
+        Log Out
+      </button>
     );
   return (
     <button
@@ -18,7 +24,7 @@ export default function LogoutButton() {
         session.logout({ logoutParams: { returnTo: window.location.origin } })
       }
     >
-      Cerrar sesión
+      Log Out
     </button>
   );
 }

@@ -1,6 +1,13 @@
+import Footer from "../../components/content/Footer";
 import GetType from "../../components/database/GetType";
 
-// Página de categoría con navegación y detalles compartidos.
-export default function CategoryPage() {
-  return <GetType type="Otro" label="Otras recetas" />;
-}
+const Pasteleria = () => {
+  return (
+    <div>
+      <GetType type="Otro" />
+      <Footer />
+    </div>
+  );
+};
+
+export default Pasteleria;

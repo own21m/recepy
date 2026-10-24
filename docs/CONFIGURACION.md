@@ -23,13 +23,25 @@ NEXT_PUBLIC_DATA_MODE=demo
 
 Este es el comportamiento predeterminado incluso cuando no existe `.env.local`. La demo ofrece un perfil local y recetas de ejemplo que permiten recorrer la aplicación sin iniciar sesión en un proveedor externo.
 
+### Recorrido con la interfaz original
+
+1. Abre la portada fotográfica y pulsa el botón `Log In`. En modo demo entra directamente al interior: no se abre Google ni se crea una cuenta externa.
+2. Explora el interior gris, los carruseles de recetas y las categorías. Las fichas y controles usan los modales de fragmento de URL de la interfaz histórica.
+3. Usa el control superior para agregar una receta. Completa los campos y guarda la preparación; la demo valida la información antes de escribir en el navegador.
+4. Consulta el perfil superior y la vista **Mis recetas**, disponible en `/home/mis-recetas`, para revisar tus publicaciones locales.
+
+La vista Mis recetas es una adaptación de la demo. Usa el archivo histórico `GetUser.module.scss`, pero no corresponde a un componente `GetUser` original encontrado en el repositorio. Las recetas de ejemplo y la sesión local tampoco son cuentas o datos recuperados de 2021.
+
+Los estilos conservan la portada con Italianno roja y sombra blanca, el interior `#141414` con paneles `#1e1e1e`, los carruseles horizontales y los modales CSS `:target`. Las transiciones de interacción son de `333ms`; Motion mantiene las apariciones retardadas con `duration: 0` del código histórico. No necesitas activar ninguna opción para ver esa presentación en `main`.
+
 Las recetas nuevas se guardan en `localStorage`, con la clave `recepy-demo-recipes-v1`. Solo están disponibles en el mismo navegador y origen; `localhost`, `127.0.0.1` y un dominio publicado son orígenes distintos y no comparten ese almacenamiento.
 
 - La imagen es local y admite hasta **1 MiB**. Cuando no se proporciona una imagen, se usa un recurso de la aplicación.
 - El video es una **URL HTTP o HTTPS opcional**. No se sube un archivo de video.
 - Se valida el contenido del formulario y de la información leída del almacenamiento.
 - Existe un límite de 3.000.000 de caracteres para las recetas serializadas, además de las cuotas que imponga el navegador.
-- El perfil permite limpiar las recetas locales y volver a los ejemplos.
+- La vista Mis recetas permite borrar las recetas de prueba y volver a los ejemplos.
+- Mis recetas muestra las publicaciones locales y permite comprobar el recorrido después de guardarlas; los ejemplos del catálogo no representan publicaciones del visitante.
 - Borrar los datos del navegador elimina las recetas guardadas. La demo no ofrece sincronización, copias de seguridad ni publicación para otros visitantes.
 
 Los ejemplos no proceden de la base de datos original y no deben confundirse con datos de sus usuarios.
