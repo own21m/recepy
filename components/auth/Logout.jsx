@@ -1,23 +1,24 @@
-//Importacion del hook proporcionado por Auth0.
-import { useAuth0 } from "@auth0/auth0-react";
-import style from '../../styles/auth/Logout.module.scss';
+import Link from "next/link";
+import { useSession } from "./Session";
+import style from "../../styles/auth/Logout.module.scss";
 
-//Componente padre para la salida del usuario
-const LogoutButton = () => {
-  //Uso del hook, para sacar al usuario de la applicacion con Auth0.
-  const { logout } = useAuth0();
-
-  //Boton para ejecutar la salida del usuario, manualmente.
+// Auth0 utiliza logoutParams; la demo solo vuelve a la portada.
+export default function LogoutButton() {
+  const session = useSession();
+  if (session.isDemo)
+    return (
+      <Link href="/" className={style.button}>
+        Volver a la portada
+      </Link>
+    );
   return (
-    <button onClick={
-      () => logout({ returnTo: window.location.origin })
-    }
-    className={ style.button }
+    <button
+      className={style.button}
+      onClick={() =>
+        session.logout({ logoutParams: { returnTo: window.location.origin } })
+      }
     >
-      Log Out
+      Cerrar sesión
     </button>
   );
-};
-
-//Exportacion del componente LogoutButton
-export default LogoutButton;
+}

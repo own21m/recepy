@@ -1,24 +1,37 @@
-//Importacion de los servicios que usaremos en la aplicacion(aunque estamos usando firebase v9, usaremos las version compat para usar las caracteristicas de la v8).
-import firebase from 'firebase/compat/app';
-import 'firebase/compat/firestore';
-import 'firebase/compat/storage';
-
-//Configuracion de las credenciales de nuestra app de firebase, para hacer la 'conexion'.
-const config = {
-  apiKey: "AIzaSyB2xwN8OfA6cD-_zgfI-i5VxLbyk3HubDA",
-  authDomain: "recepy-aplication-v1.firebaseapp.com",
-  projectId: "recepy-aplication-v1",
-  storageBucket: "recepy-aplication-v1.appspot.com",
-  messagingSenderId: "869757248389",
-  appId: "1:869757248389:web:6a899f12e9913bb04b9aec",
-  measurementId: "G-WT0XGC5HX8"
-};
-
-//Inicializacion de la aplicacion.
-const app = firebase.initializeApp(config);
-
-//Configuracion de firebase firestore para usarlo como objeto en nuestra app.
-export const dataBase = firebase.firestore(app);
-
-//Configuracion de firebase storage para usarlo como objeto en nuestra app.
-export const storage = firebase.storage(app);
+// La conexión se carga solo en modo Firebase; la demo no hace peticiones.
+export async function fetchCloudRecipes() {
+  const config = {
+    apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
+    authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
+    projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+  };
+  if (!config.apiKey || !config.projectId || !config.appId) {
+    throw new Error(
+      "Falta configurar Firebase. Revisa las variables de entorno del README.",
+    );
+  }
+  // No se reutiliza la configuración del proyecto estudiantil original.
+  const [{ initializeApp, getApps, getApp }, { getFirestore, collection, getDocs }] =
+    await Promise.all([import("firebase/app"), import("firebase/firestore")]);
+  const app = getApps().length ? getApp() : initializeApp(config);
+  const snapshot = await getDocs(collection(getFirestore(app), "recipes"));
+  // Auth0 no autoriza Firebase por sí solo: esta integración solo permite lectura.
+  return snapshot.docs.map((document) => {
+    const record = document.data();
+    const text = (value) => (typeof value === "string" ? value : "");
+    return {
+      id: document.id,
+      name: text(record.name) || "Receta sin nombre",
+      author: text(record.author) || "Autor sin nombre",
+      description: text(record.description),
+      ingredients: text(record.ingredients),
+      howTo: text(record.howTo),
+      type: text(record.type) || "Otro",
+      image: text(record.image),
+      video: text(record.video),
+    };
+  });
+}

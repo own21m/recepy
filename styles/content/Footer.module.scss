@@ -1,28 +1,30 @@
+// Pie sobrio que mantiene los reconocimientos originales sin enlaces de correo ambiguos.
 .wrapper {
-    background-color: rgb(0, 0, 0);
-    height: fit-content;
-    padding: 20px;
-
-    .text {
-        color: rgb(150, 150, 150);
-        text-align: center;
-        width: 100%;
-    }
-
-    .images {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-
-        div {
-            background-color: red;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-
-            img {
-                height: 50px;
-            }
-        }
-    }
+  background: #0c0c0c;
+  padding: 40px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  border-top: 1px solid #2c2521;
+}
+.text {
+  margin: 0;
+  max-width: 740px;
+  color: #a99c92;
+  font-size: 0.8rem;
+  text-align: center;
+  line-height: 1.7;
+}
+.images {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  padding-top: 8px;
+}
+.images img {
+  object-fit: contain;
+  max-height: 70px;
+  width: auto;
 }

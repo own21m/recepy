@@ -1,13 +1,6 @@
-import Footer from '../../components/content/Footer';
-import GetType from '../../components/database/GetType';
+import GetType from "../../components/database/GetType";
 
-const Pasteleria = () => {
-    return (
-        <div>
-            <GetType type="Parrilla" />
-            <Footer />
-        </div>
-    );
-};
-
-export default Pasteleria;
+// Página de categoría con navegación y detalles compartidos.
+export default function CategoryPage() {
+  return <GetType type="Parrilla" label="Parrilla" />;
+}

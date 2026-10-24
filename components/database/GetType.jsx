@@ -1,94 +1,49 @@
-import { useState, useEffect } from "react";
-import { dataBase } from "./config";
-import style from "../../styles/database/GetType.module.scss";
-import styleModal from "../../styles/content/modalRecipe.module.scss";
-import { motion } from "framer-motion";
+import Head from "next/head";
+import Link from "next/link";
+import { useRecipes } from "./RecipesProvider";
+import RecipeGrid from "../content/RecipeGrid";
+import Footer from "../content/Footer";
+import style from "../../styles/content/Main.module.scss";
 
-const GetType = props => {
-    
-    const [ recipes, setRecipes ] = useState([{ 
-        name: "",
-    },]);
-    const [ index, setIndex ] = useState(0);
-
-    useEffect( () => {
-            
-        //funcion para guardar la lista de datos que obtenemos
-        const listGet = async () => {
-            const list = await dataBase.collection("recipes")
-            .where("type", "==", props.type)
-            .get()
-
-            //Asignacion de la lista dentro de nuestro array
-            setRecipes(list.docs.map(doc => doc.data()));
-        };
-
-        //Inicializacion de la funcion
-        listGet();
-    }, [props.type]);
-
-    return (
-        <>
-            <section className={style.wrapper} >
-                {recipes.map(doc => {
-
-                    return (
-                        <motion.a 
-                            initial={{ scale: 0 }}
-                            animate={{ scale: 1 }}
-                            transition={{ 
-                                duration: 0,
-                                delay: "1." + recipes.indexOf(doc) + 2
-                            }}
-                            href="#open-modal"
-                            style={{backgroundImage: `url(${doc.image})`}} 
-                            key={recipes.indexOf(doc)}
-                            onClick={() => setIndex(recipes.indexOf(doc)) }
-                        ></motion.a>
-                    );
-                })}
-            </section>
-            <div 
-                id="open-modal" 
-                className={ styleModal.modalOpen }
-            >
-                <div>
-
-                    {/* Boton para cerrar el formulario */}
-                    <a 
-                        href="#" 
-                        title="Close" 
-                    >
-                        X
-                    </a>
-                    <section>
-                        <h1>
-                            "{recipes[index].name}"
-                        </h1>
-                        <video 
-                            src={recipes[index].video} 
-                            controls
-                            className={ styleModal.video } 
-                            alt={"video principal : " + recipes[index].name}
-                            title={"video principal : " + recipes[index].name}
-                        />
-                        <h2>
-                            Descripcion.
-                        </h2>
-                        <textarea value={recipes[index].description} readOnly />
-                        <h2>
-                            Ingredientes.
-                        </h2>
-                        <textarea value={recipes[index].ingredients} readOnly />
-                        <h2>
-                            Paso A Paso.  
-                        </h2> 
-                        <textarea value={recipes[index].howTo} readOnly />
-                    </section>
-                </div>
-            </div>
-        </>
-    );
-};
-
-export default GetType;
+// Las categorías comparten datos y ofrecen una salida visible al lobby.
+export default function GetType({ type, label = type }) {
+  const { recipes, loading, error, isDemo } = useRecipes();
+  return (
+    <>
+      <Head>
+        <title>{label} · Recepy</title>
+      </Head>
+      <main className={style.content}>
+        <nav className={style.navbar}>
+          <Link href="/home/lobby" className={style.brand}>
+            Recepy
+          </Link>
+          <Link href="/home/lobby" className={style.textLink}>
+            Volver al inicio
+          </Link>
+        </nav>
+        <div className={style.heading}>
+          <p className={style.eyebrow}>RECETAS POR CATEGORÍA</p>
+          <h1>{label}</h1>
+          <p>
+            {isDemo
+              ? "Ejemplos y recetas que has guardado en este navegador."
+              : "Recetas de tu proyecto Firebase."}
+          </p>
+        </div>
+        {loading ? (
+          <p className="empty-state" role="status">
+            Cargando recetas...
+          </p>
+        ) : null}
+        {error ? (
+          <p className="notice" role="alert">
+            {error}
+          </p>
+        ) : null}
+        <RecipeGrid recipes={recipes.filter((recipe) => recipe.type === type)} />
+      </main>
+      <Footer />
+    </>
+  );
+}

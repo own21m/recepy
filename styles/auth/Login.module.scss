@@ -1,19 +1,22 @@
+// Acción principal compartida por el enlace de demo y el inicio de sesión Auth0.
 .button {
-    background-color: rgb(255, 255, 255);
-    border: none;
-    border-radius: 20px;
-    padding: 20px;
-    width: 30vw;
-    font-weight: bold;
-    font-size: 3vh;
-    cursor: pointer;
-    transition: 333ms;
-
-    &:hover {
-        transform: scale(1.1);
-    }
-
-    &:active {
-        background-color: rgb(200, 200, 200);
-    }
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  border: 1px solid #e56754;
+  border-radius: 12px;
+  padding: 14px 28px;
+  background: #bd3934;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  transition:
+    background 0.2s,
+    transform 0.2s;
+}
+.button:hover {
+  background: #d1443c;
+  transform: translateY(-2px);
 }

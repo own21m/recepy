@@ -1,31 +1,30 @@
-//Importaciones de los componentes.
-import { useAuth0 } from '@auth0/auth0-react';
-import Main from '../content/Main';
+import { useSession } from "./Session";
+import Main from "../content/Main";
+import LoginButton from "./Login";
 
-//Componente Initial, que carga la aplicacion cuando el usuario esta autenticado.
-const Initial = () => {
-  //Uso del hook de Auth0, para estraer el estado del usuario.
-  const { isAuthenticated, isLoading } = useAuth0();
-
-  //Cuando el usuario ha sido autenticado con Auth0, aparecera cargando la informacion.
-  if (isLoading) {
+// Se muestran estados explícitos de carga, error y sesión en lugar de una pantalla vacía.
+export default function Initial() {
+  const session = useSession();
+  if (session.isLoading)
     return (
-      <div style={{color:'white'}}>
-        Loading ...
-      </div>
+      <main className="status-page" role="status">
+        Cargando tu sesión...
+      </main>
     );
-  };
-
-  //Cuando esta autenticado y ya ha cargado, se renderizara el componente Feed.
-  return (
-    isAuthenticated && (
-      <>
-        {/* Componente de la pagina principal */}
-        <Main />
-      </>
-    )
-  );
-};
-
-//Exportacion del componente Initial
-export default Initial;
+  if (session.error)
+    return (
+      <main className="status-page">
+        <h1>No pudimos iniciar sesión</h1>
+        <p>Revisa la configuración de Auth0 y vuelve a intentarlo.</p>
+        <LoginButton />
+      </main>
+    );
+  if (!session.isAuthenticated)
+    return (
+      <main className="status-page">
+        <h1>Bienvenido a Recepy</h1>
+        <LoginButton />
+      </main>
+    );
+  return <Main />;
+}

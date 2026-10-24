@@ -1,11 +1,14 @@
-//Importacion del estilo global de la aplicacion.
-import '../styles/global/style.scss';
+import "../styles/global/style.scss";
+import { SessionProvider } from "../components/auth/Session";
+import { RecipesProvider } from "../components/database/RecipesProvider";
 
-/*Componente inicializador de la aplicacion.
-Este componente recibe toda la informacion de nuestras paginas para renderizarlas.*/
-const MyApp = ({ Component, pageProps }) => {
-  return <Component {...pageProps} />
+// Estado compartido de sesión y recetas para todas las páginas de Next.js.
+export default function MyApp({ Component, pageProps }) {
+  return (
+    <SessionProvider>
+      <RecipesProvider>
+        <Component {...pageProps} />
+      </RecipesProvider>
+    </SessionProvider>
+  );
 }
-
-//Exportacion del componente MyApp
-export default MyApp;

@@ -1,0 +1,34 @@
+name: Comprobar Recepy
+
+# La demo se verifica sin secretos ni conexión a las cuentas históricas.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar código
+        uses: actions/checkout@v7.0.1
+      - name: Preparar Node.js
+        uses: actions/setup-node@v7.1.0
+        with:
+          node-version: 22
+          cache: npm
+      - name: Instalar dependencias bloqueadas
+        run: npm ci
+      - name: Revisar formato
+        run: npm run format:check
+      - name: Analizar código
+        run: npm run lint
+      - name: Probar reglas de la demo
+        run: npm test
+      - name: Compilar todas las páginas
+        run: npm run build
+        env:
+          NEXT_PUBLIC_DATA_MODE: demo

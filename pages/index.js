@@ -1,33 +1,32 @@
-//Pagina de llegada del usuario.
-
-//Importaciones de componentes para iniciar la autenticacion.
-import { Auth0Provider, useAuth0 } from "@auth0/auth0-react";
+import Head from "next/head";
 import LoginButton from "../components/auth/Login";
-import Initial from "../components/auth/Initial";
-import { useEffect } from "react";
-import Footer from "../components/Footer";
-import style from '../styles/content/Index.module.scss'
+import Footer from "../components/content/Footer";
+import { isDemoMode } from "../components/database/RecipesProvider";
+import style from "../styles/content/Index.module.scss";
 
-//Componente padre para redirigir a Auth0 y mostrar contenido de recepy.
-const Index = () => {
+// Portada gastronómica con la marca roja del proyecto estudiantil original.
+export default function Index() {
   return (
-    <Auth0Provider 
-      domain="dev-dou8wmxc.us.auth0.com"
-      clientId="OSpj6EyQBe7rD681JugQsNWIFVT76U48"
-      redirectUri="http://localhost:3000/home/lobby" 
-    >
-      <div> 
-        <div className={ style.wall } >
-          <h1>
-            Recepy
-          </h1>
-          <LoginButton />
-        </div>
-        <Footer />
-      </div>
-    </Auth0Provider>
+    <>
+      <Head>
+        <title>Recepy · Recetas para compartir</title>
+        <meta
+          name="description"
+          content="Recepy, un proyecto estudiantil de recetas recuperado para explorar, aprender y compartir cocina."
+        />
+      </Head>
+      <main className={style.wall}>
+        <p className={style.eyebrow}>COCINA. COMPARTE. DESCUBRE.</p>
+        <h1>Recepy</h1>
+        <p className={style.intro}>Las buenas recetas saben mejor cuando se comparten.</p>
+        <LoginButton />
+        <p className={style.note}>
+          {isDemoMode
+            ? "Demo local: explora ejemplos y guarda tus propias recetas en este navegador, sin crear una cuenta."
+            : "Modo conectado: las recetas se consultan desde tu proyecto Firebase."}
+        </p>
+      </main>
+      <Footer />
+    </>
   );
-};
-
-//Exportacion del componente Index
-export default Index;
+}

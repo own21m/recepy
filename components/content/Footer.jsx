@@ -1,28 +1,21 @@
-import style from '../../styles/content/Footer.module.scss';
+import style from "../../styles/content/Footer.module.scss";
 
-const Footer = () => {
-    return (
-        <footer className={ style.wrapper } >
-            <p className={ style.text } >
-                Recepy nacio como un proyecto de estudiantes, en esta aplicacion hemos practicado conceptos como la interfaz del usuario, servidor, autenticacion, base de datos entre muchas otras cosas, aunque paresca una aplicacion pequeña, es una aplicacion que ha llevado mucho trabajo hacer y si has notado un mal funcionamiento en ella, una caracteristica que se pueda mejorar o algo mas para agregar puedes informarnolo al correo : 
-                <br />
-                <a 
-                href="https://mail.google.com/mail/u/0/#inbox" 
-                className={ style.text }
-                >
-                    proyectosena.programacion@gmail.com
-                </a>
-            </p>
-            <section className={ style.images } >
-                <div>
-                    <img src="/sena.png" />
-                </div>
-                <div>
-                    <img src="/cefit.png" />
-                </div>
-            </section>
-        </footer>
-    );
-};
-
-export default Footer;
+// Reconocimiento del origen estudiantil y de los tres autores originales.
+export default function Footer() {
+  return (
+    <footer className={style.wrapper}>
+      <p className={style.text}>
+        Recepy nació como un proyecto de estudiantes del Cefit: un espacio para aprender
+        interfaces, autenticación, bases de datos y cocina compartida.
+      </p>
+      <p className={style.text}>
+        Proyecto original de Juan Pablo Gutiérrez Gutiérrez, Esteban Pérez Garzón y
+        Cristian David Ramírez Vargas.
+      </p>
+      <section className={style.images} aria-label="Instituciones del proyecto original">
+        <img src="/sena.png" alt="SENA" width="80" height="80" />
+        <img src="/cefit.png" alt="Cefit" width="120" height="80" />
+      </section>
+    </footer>
+  );
+}

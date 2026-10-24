@@ -1,243 +1,181 @@
-//Importacion de las funciones principales.
-import { 
-  Formik, 
-  Field, 
-  Form 
-} from 'formik';
-import { 
-  dataBase, 
-  storage 
-} from './config';
-import { useAuth0 } from '@auth0/auth0-react';
-import { useState } from 'react';
-import style from '../../styles/database/Add.module.scss';
+import { useRef, useState } from "react";
+import { Formik, Field, Form, ErrorMessage } from "formik";
+import { useRecipes } from "./RecipesProvider";
+import { CATEGORIES, MAX_IMAGE_BYTES, validateRecipe } from "../../lib/recipes.mjs";
+import style from "../../styles/database/Add.module.scss";
 
-//Componente para agregar las recetas.
-const Add = () => {
-  
-  //Uso del hook, para obtener la informacion del usuario que ha sido autenticado.
-  const { user } = useAuth0();
+const initialValues = {
+  name: "",
+  type: "",
+  description: "",
+  ingredients: "",
+  howTo: "",
+  video: "",
+};
 
-  //Declaracion del estado para almacenar el enlace que traemos desde firebase storage.
-  const [link, setLink] = useState('');
-
-  //Funcion para capturar y enviar la imagen a firebase storage
-  const fileStore = async e => {
-
-    //Constante para almacenar el archivo.
-    const file = e.target.files[0];
-
-    //Referencia a la firebase storage.
-    const storageRef = storage.ref();
-
-    //Ruta donde se guardara el archivo en firebase storage, se guardara con su nombre.
-    const path = storageRef.child(file.name);
-
-    //Se envia la rita con la informacion del archivo
-    await path.put(file);
-
-    //Obtenemos el link donde se almacena la imagen para 'conectarlo' con la informacion en firebase firestore.
-    const linkUrl = await path.getDownloadURL();
-
-    //Actualizacion de la informacion en el Link.
-    setLink(linkUrl);
-
-  };
-
-  const [video, setVideo] = useState('');
-
-  const videoStore = async e => {
-
-    //Constante para almacenar el archivo.
-    const file = e.target.files[0];
-
-    //Referencia a la firebase storage.
-    const storageRef = storage.ref();
-
-    //Ruta donde se guardara el archivo en firebase storage, se guardara con su nombre.
-    const path = storageRef.child(file.name);
-
-    //Se envia la rita con la informacion del archivo
-    await path.put(file);
-
-    //Obtenemos el link donde se almacena la imagen para 'conectarlo' con la informacion en firebase firestore.
-    const linkUrl = await path.getDownloadURL();
-
-    //Actualizacion de la informacion en el Link.
-    setVideo(linkUrl);
-
-  };
-
-  //Funcion para enviar los datos de la receta a firebase firestore.
-  const sent = values => {
-    
-    //Configaracion de la ruta donde pondremos los datos de la receta
-    dataBase.collection( 'recipes' )
-    .add({
-        name: values.name,
-        description: values.description,
-        howTo: values.howTo,
-        ingredients: values.ingredients,
-        type: values.type,
-        author: user.name,
-        idAuthor: user.email,
-        image: link,
-        video: video,
-        date: new Date().toString(),
-    })
-    .then( () => {
-      alert('La receta se ha agregado correctamente');
-      //Una vez la receta se ha subido con exito, la pagina se recarga.
-      window.location.reload();
-    });
-  };
-
-  //Formulario para que el usuario escriba la informacion de la receta.
+// En demo se guarda una imagen pequeña. Los vídeos son enlaces, no archivos pesados.
+export default function Add({ onSaved }) {
+  const { addRecipe, isDemo } = useRecipes();
+  const [image, setImage] = useState("");
+  const [fileError, setFileError] = useState("");
+  const [fileLoading, setFileLoading] = useState(false);
+  const [submitError, setSubmitError] = useState("");
+  const imageInput = useRef(null);
+  async function readImage(event) {
+    setImage("");
+    setFileError("");
+    const file = event.target.files?.[0];
+    if (!file) return;
+    if (!["image/jpeg", "image/png", "image/webp", "image/gif"].includes(file.type)) {
+      setFileError("Elige una imagen JPEG, PNG, WebP o GIF.");
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      setFileError("La imagen no puede superar 1 MB en la demo local.");
+      return;
+    }
+    setFileLoading(true);
+    try {
+      const value = await new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = () => reject(new Error("No se pudo leer la imagen."));
+        reader.readAsDataURL(file);
+      });
+      setImage(value);
+    } catch {
+      setFileError("No se pudo leer la imagen. Prueba con otro archivo.");
+    } finally {
+      setFileLoading(false);
+    }
+  }
+  if (!isDemo)
+    return (
+      <p className="notice">
+        Esta recuperación permite consultar Firebase. Publicar en la nube requiere
+        configurar un backend que autorice la identidad de Auth0 en Firebase; no se envían
+        escrituras con la sesión del navegador.
+      </p>
+    );
   return (
-    <section className={ style.wrapper } >
-
-      {/* Componente Formik para declarar los valores del formulario */}
-      <Formik 
-        initialValues={{ 
-          name: '', 
-          type: '', 
-          description: '',
-          howTo: '',
-          ingredients: '' 
-        }} 
-        onSubmit={ sent } 
+    <section className={style.wrapper}>
+      <p className={style.note}>
+        Demo local. Tu receta se guardará solo en este navegador. Una imagen y un vídeo
+        son opcionales.
+      </p>
+      <Formik
+        initialValues={initialValues}
+        validate={validateRecipe}
+        onSubmit={async (values, helpers) => {
+          setSubmitError("");
+          try {
+            addRecipe(values, image);
+            helpers.resetForm();
+            setImage("");
+            onSaved?.();
+          } catch (problem) {
+            setSubmitError(problem.message);
+          } finally {
+            helpers.setSubmitting(false);
+          }
+        }}
       >
-
-        {/* formulario para ingresar la receta */}
-        <Form className={ style.item } >
-
-          {/* Titulo 'Nombra tu receta' */}
-          <label>
-            Nombra tu receta
-          </label>
-
-          {/* input para ingresar el nombre */}
-          <Field 
-            name="name" 
-            type="text" 
-            className={ style.effect }
-            required 
-          />
-
-          {/* Titulo '¿De que se trata tu receta?' */}
-          <label>
-            ¿De que se trata tu receta?
-          </label>
-
-          {/* input para ingresar la descripcion */}
-          <Field 
-            name="description" 
-            as="textarea" 
-            required 
-          />
-
-          {/* titulo '¿Como se hace tu receta?' */}
-          <label>
-            ¿Como se hace tu receta?
-          </label>
-
-          {/* input para ingresar el paso a paso */}
-          <Field 
-            name="howTo" 
-            as="textarea" 
-            required 
-          />
-
-          <label>
-            ¿Que ingredientes tiene tu receta?
-          </label>
-
-          {/* input para ingresar los ingredientes */}
-          <Field 
-            name="ingredients" 
-            as="textarea" 
-            required 
-          />
-
-          {/* Selecciona una miniatura para tu receta */}
-          <label>
-            Selecciona una miniatura para tu receta
-          </label>
-
-          {/* input para ingresar la imagen */}
-          <input 
-            name="file" 
-            type="file" 
-            onChange={fileStore} 
-            required 
-            className={ style.effect }
-          />
-
-          {/* Selecciona una miniatura para tu receta */}
-          <label>
-            Selecciona un video para tu receta
-          </label>
-
-          {/* input para ingresar la imagen */}
-          <input 
-            name="file" 
-            type="file" 
-            onChange={videoStore} 
-            required 
-            className={ style.effect }
-          />
-
-          {/* titulo '¿De que tipo es tu receta?' */}
-          <label>
-            ¿De que tipo es tu receta?
-          </label>
-
-          {/* input para selecionar el tipo */}
-          <Field 
-            name="type" 
-            as="select" 
-            required 
-            className={ style.effect }
-          >
-
-            {/* Opcion por defecto */}
-            <option value="" >
-              Elige el tipo de tu receta
-            </option>
-
-            {/* Opcion 'Pasteleria' */}
-            <option value="Pasteleria" >
-              Pasteleria
-            </option>
-
-            {/* Opcion 'Vegetariano' */}
-            <option value="Vegetariano" >
-              Vegetariano
-            </option>
-
-            {/* Opcion 'Parrilla' */}
-            <option value="Parrilla" >
-              Parrilla
-            </option>
-
-            {/* Opcion 'Otro' */}
-            <option value="Otro" >
-              Otro
-            </option>
-          </Field>
-
-          {/* boton para subir la receta */}
-          <button 
-            type="submit" 
-            className={ style.effect }
-          >
-            Submit
-          </button>
-        </Form>
+        {({ isSubmitting }) => (
+          <Form className={style.item} noValidate>
+            <label htmlFor="recipe-name">Nombre de la receta</label>
+            <Field id="recipe-name" name="name" type="text" maxLength={100} required />
+            <ErrorMessage name="name" component="p" className={style.error} />
+            <label htmlFor="recipe-description">¿De qué se trata?</label>
+            <Field
+              id="recipe-description"
+              name="description"
+              as="textarea"
+              maxLength={6000}
+              required
+            />
+            <ErrorMessage name="description" component="p" className={style.error} />
+            <label htmlFor="recipe-ingredients">Ingredientes</label>
+            <Field
+              id="recipe-ingredients"
+              name="ingredients"
+              as="textarea"
+              maxLength={6000}
+              required
+            />
+            <ErrorMessage name="ingredients" component="p" className={style.error} />
+            <label htmlFor="recipe-howto">Paso a paso</label>
+            <Field
+              id="recipe-howto"
+              name="howTo"
+              as="textarea"
+              maxLength={6000}
+              required
+            />
+            <ErrorMessage name="howTo" component="p" className={style.error} />
+            <label htmlFor="recipe-type">Categoría</label>
+            <Field id="recipe-type" name="type" as="select" required>
+              <option value="">Elige una categoría</option>
+              {CATEGORIES.map((category) => (
+                <option key={category} value={category}>
+                  {category === "Pasteleria" ? "Pastelería" : category}
+                </option>
+              ))}
+            </Field>
+            <ErrorMessage name="type" component="p" className={style.error} />
+            <label htmlFor="recipe-image">Imagen (opcional, máximo 1 MB)</label>
+            <input
+              id="recipe-image"
+              ref={imageInput}
+              type="file"
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              onChange={readImage}
+              aria-describedby="image-note"
+            />
+            <p id="image-note" className={style.note}>
+              Si no eliges una imagen, se usará la fotografía de portada del proyecto.
+            </p>
+            {fileLoading ? <p role="status">Leyendo imagen...</p> : null}
+            {fileError ? (
+              <p className={style.error} role="alert">
+                {fileError}
+              </p>
+            ) : null}
+            {image ? (
+              <img
+                src={image}
+                alt="Vista previa de tu receta"
+                className={style.preview}
+              />
+            ) : null}
+            {image || fileError ? (
+              <button
+                type="button"
+                onClick={() => {
+                  setImage("");
+                  setFileError("");
+                  if (imageInput.current) imageInput.current.value = "";
+                }}
+              >
+                Quitar imagen y usar portada
+              </button>
+            ) : null}
+            <label htmlFor="recipe-video">Enlace a un vídeo (opcional, MP4 o WebM)</label>
+            <Field id="recipe-video" name="video" type="url" placeholder="https://..." />
+            <ErrorMessage name="video" component="p" className={style.error} />
+            {submitError ? (
+              <p className={style.error} role="alert">
+                {submitError}
+              </p>
+            ) : null}
+            <button
+              type="submit"
+              disabled={isSubmitting || fileLoading || Boolean(fileError)}
+            >
+              {isSubmitting ? "Guardando..." : "Guardar receta en este navegador"}
+            </button>
+          </Form>
+        )}
       </Formik>
     </section>
   );
-};
-
-//Exportacion del componente Add.
-export default Add;
+}

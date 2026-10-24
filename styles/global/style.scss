@@ -1,37 +1,83 @@
-//Estos son los estilos globales de la aplicacion.
-
-//Estilos basicos de body y html.
-html, body {
+// Base oscura del proyecto original, con foco visible y movimiento reducido.
+html,
+body {
   padding: 0;
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
-  background-color: rgb(20, 20, 20);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  background: #141414;
+  color: #f7f4ef;
 }
-
-//Selector de elementos personalizado.
-::selection {
-  background-color: rgb(174, 0, 255);
-  color: rgb(255, 255, 255);
-}
-
-//Barra de scroll vertical 'eliminada'.
-::-webkit-scrollbar {
-  width: 5px;
-  background-color: rgb(15, 15, 15);
-}
-
-//scrollnar-thumb de el contenedor
-::-webkit-scrollbar-thumb {
-  background-color: rgb(42, 42, 42);
-  border-radius: 999px;
-}
-
-//Estilo del scrollnar-thumb al ser clickeado
-::-webkit-scrollbar-thumb:active {
-  background-color: rgba(249, 249, 249, 1);
-}
-
-//Tamaño de los elemntos determinado por el borde
 * {
   box-sizing: border-box;
+}
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+a {
+  color: inherit;
+}
+:focus-visible {
+  outline: 3px solid #edab88;
+  outline-offset: 4px;
+}
+::selection {
+  background: #9f292d;
+  color: white;
+}
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+  background: #181818;
+}
+::-webkit-scrollbar-thumb {
+  background: #49413e;
+  border-radius: 9px;
+}
+.notice {
+  max-width: 1120px;
+  margin: 0 auto;
+  border: 1px solid #514139;
+  background: #211d1b;
+  padding: 16px 20px;
+  border-radius: 12px;
+  color: #e6caba;
+  line-height: 1.6;
+  font-size: 0.88rem;
+}
+.empty-state {
+  padding: 32px;
+  color: #c4bbb5;
+  text-align: center;
+}
+.status-page {
+  min-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 24px;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

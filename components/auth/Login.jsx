@@ -1,24 +1,36 @@
-//Importacion del hook proporcionado por Auth0.
-import { useAuth0 } from '@auth0/auth0-react';
-import style from '../../styles/auth/Login.module.scss';
+import Link from "next/link";
+import { useSession } from "./Session";
+import style from "../../styles/auth/Login.module.scss";
 
-//Componente padre para la utenticacion con Auth0
-const LoginButton = () => {
-  //Uso del hook, para redirigir al usuario al formulario de autenticacion.
-  const { loginWithRedirect } = useAuth0();
-
-  //Boton de para ejecutar la redireccion.
-  return ( 
-    <button 
-      onClick={
-        () => loginWithRedirect()
+// La demo no requiere registro ni accede al servicio de autenticación antiguo.
+export default function LoginButton() {
+  const session = useSession();
+  if (session.isDemo)
+    return (
+      <Link href="/home/lobby" className={style.button}>
+        Explorar la demo
+      </Link>
+    );
+  if (!session.configured)
+    return (
+      <p role="status">Configura Auth0 para iniciar sesión o vuelve al modo demo.</p>
+    );
+  if (session.isAuthenticated)
+    return (
+      <Link href="/home/lobby" className={style.button}>
+        Entrar a Recepy
+      </Link>
+    );
+  return (
+    <button
+      className={style.button}
+      onClick={() =>
+        session
+          .loginWithRedirect()
+          .catch(() => window.alert("No se pudo iniciar la conexión con Auth0."))
       }
-      className={ style.button }
     >
-      Log In
+      Iniciar sesión
     </button>
   );
-};
-
-//Exportacion del componente LoginButton.
-export default LoginButton;
+}
