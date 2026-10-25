@@ -1,4 +1,6 @@
-# Recepy
+# Recepy Legacy · 2021
+
+Esta es la versión histórica de Recepy, creada en 2021 y recuperada para conservar su código e historial. La nueva aplicación de 2026 se desarrolla de forma independiente en [RECEPY Astra](https://github.com/own21m/recepy-astra).
 
 Una pequeña red social para compartir recetas, nacida como proyecto estudiantil en 2021 y recuperada para conservar su historia y volver a explorarla desde un entorno actual.
 
@@ -70,8 +72,8 @@ Las pruebas y el recorrido comprobado en el navegador están descritos en [VALID
 Requiere **Node.js 22.13.0 o posterior** y npm. El entorno utilizado durante la recuperación fue Node.js 24.19.0.
 
 ```bash
-git clone https://github.com/own21m/recepy.git
-cd recepy
+git clone https://github.com/own21m/recepy-legacy.git
+cd recepy-legacy
 npm ci
 npm run dev
 ```
