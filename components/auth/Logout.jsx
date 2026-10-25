@@ -14,7 +14,7 @@ export default function LogoutButton() {
         onClick={() => router.push("/")}
         title="Volver a la portada de prueba"
       >
-        Log Out
+        Volver a la portada
       </button>
     );
   return (
@@ -24,7 +24,7 @@ export default function LogoutButton() {
         session.logout({ logoutParams: { returnTo: window.location.origin } })
       }
     >
-      Log Out
+      Volver a la portada
     </button>
   );
 }

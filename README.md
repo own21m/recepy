@@ -2,14 +2,18 @@
 
 Una pequeña red social para compartir recetas, nacida como proyecto estudiantil en 2021 y recuperada para conservar su historia y volver a explorarla desde un entorno actual.
 
-Recepy reúne un catálogo de recetas, categorías de cocina, fichas con ingredientes y preparación, y un formulario para compartir nuevas ideas. La rama `main` recupera los estilos y la composición de la última interfaz publicada en 2021, con una sesión y datos de demostración que permiten recorrerla sin las cuentas ni los servicios originales.
+Recepy reúne un catálogo de recetas, categorías de cocina, fichas con ingredientes y preparación, y un formulario para compartir nuevas ideas. La versión local incorpora una nueva capa de diseño editorial: papel marfil, tipografía de libro de cocina, acentos tomate y oliva, fotografías grandes y un recetario adaptable a móvil. Conserva la sesión y los datos de demostración para recorrerla sin las cuentas ni los servicios originales.
 
-![Portada de Recepy en la versión recuperada](docs/images/portada.jpg)
+El código y la interfaz de 2021 siguen conservados en la referencia Git `original-2021`. Las siguientes capturas muestran la **interfaz editorial actual**, ejecutada con datos de demostración.
+
+| Portada editorial                                                                                                        | Recetario                                                                                                 |
+| ------------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| ![Portada editorial actual de Recepy, con fondo marfil, título y fotografía de pizza](docs/images/editorial/portada.jpg) | ![Recetario actual de Recepy con categorías y tarjetas fotográficas](docs/images/editorial/recetario.jpg) |
 
 ## Qué puedes explorar
 
-- Portada fotográfica con el nombre Recepy en cursiva roja y acceso mediante el botón `Log In`.
-- Interior gris oscuro, controles superiores, categorías y carruseles horizontales de recetas.
+- Portada editorial con fotografía, marca Recepy en cursiva y acceso mediante el botón `Entrar al recetario`.
+- Recetario marfil, navegación clara, categorías ilustradas con SVG y tarjetas fotográficas.
 - Recetas con nombre, autor, descripción, ingredientes, preparación, imagen y un enlace de video opcional.
 - Categorías de pastelería, cocina vegetariana, parrilla y otras recetas.
 - Una selección de tres recetas destacadas. Se ordenan por nombre; no representan un ranking de popularidad.
@@ -17,19 +21,32 @@ Recepy reúne un catálogo de recetas, categorías de cocina, fichas con ingredi
 - Publicación de recetas de prueba en el navegador, con validación y mensajes de error.
 - Vista **Mis recetas** para consultar lo que guardaste en este navegador; es una adaptación de la demo, no un componente original recuperado.
 
-![Catálogo de recetas en la versión recuperada](docs/images/recetas.jpg)
+| Ficha de receta                                                                                                       | Vista móvil                                                                                               |
+| --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| ![Ficha actual de una receta de Recepy, con fotografía, ingredientes y preparación](docs/images/editorial/receta.jpg) | ![Recetario editorial de Recepy en una pantalla de 390 píxeles de ancho](docs/images/editorial/movil.jpg) |
 
-Las capturas muestran la restauración actual. Las recetas de ejemplo se prepararon para esta demostración: **no son datos recuperados de los usuarios de 2021**.
+Las recetas de ejemplo se prepararon para esta demostración: **no son datos recuperados de los usuarios de 2021**. Las fotografías de los platos siguen siendo los recursos originales del proyecto; las capturas muestran la nueva presentación.
 
-## La interfaz de 2021
+## La interfaz de 2021, conservada en Git
 
-La portada recupera la fotografía `wallpaper.jpg`, el degradado a negro y la marca roja en **Italianno**, con el tamaño original de `40vh` y sombra blanca. El interior vuelve al fondo `#141414`, las superficies `#1e1e1e`, la tipografía del sistema y las tarjetas redondeadas del código histórico.
+La referencia `original-2021` conserva la portada con `wallpaper.jpg`, degradado a negro y marca roja en **Italianno**, con el tamaño original de `40vh` y sombra blanca. Su interior utiliza el fondo `#141414`, las superficies `#1e1e1e`, la tipografía del sistema y las tarjetas redondeadas del código histórico. El diseño editorial reutiliza la fotografía y la marca con otra composición, sin sobrescribir esa referencia histórica.
 
-Italianno se incluye localmente desde el [repositorio oficial de Google Fonts](https://github.com/google/fonts/tree/main/ofl/italianno), con su [licencia SIL OFL 1.1](public/fonts/italianno/OFL.txt). Se registra en la cabecera para corregir el orden del import remoto durante la compilación, sin cambiar las reglas visuales históricas.
+<details>
+<summary>Ver capturas de la recuperación anterior al rediseño</summary>
 
-Se mantienen los carruseles horizontales y los modales que se abren mediante fragmentos de URL y selectores CSS `:target`. Las transiciones de interacción duran `333ms`. Las apariciones de Framer Motion conservan los retardos históricos y `duration: 0`: son apariciones escalonadas, no una nueva animación suave de escala.
+Estas imágenes documentan la restauración previa. Se conservan como parte de la historia del proyecto y no representan el diseño actual.
 
-La recuperación adapta los datos, la sesión y las comprobaciones necesarias para ejecutar el recorrido. La primera demo, que utilizaba una composición visual diferente, se conserva en la rama `demo-modernizada`; la referencia para la presentación de `main` es el árbol `original-2021`.
+![Portada histórica de la versión recuperada, anterior al diseño editorial](docs/images/portada.jpg)
+
+![Catálogo histórico de la versión recuperada, anterior al diseño editorial](docs/images/recetas.jpg)
+
+</details>
+
+Italianno se incluye localmente desde el [repositorio oficial de Google Fonts](https://github.com/google/fonts/tree/main/ofl/italianno), con su [licencia SIL OFL 1.1](public/fonts/italianno/OFL.txt). La nueva capa visual no añade dependencias ni necesita descargar fuentes al abrir la aplicación.
+
+La capa editorial presenta las tarjetas en una cuadrícula adaptable. Los modales conservan los fragmentos de URL y un controlador compartido abre y cierra sus vistas mediante `data-recepy-open`, gestiona el foco, limita la navegación por teclado y permite cerrar con Escape. CSS `:target` queda como respaldo sin JavaScript. Ingredientes y preparación se leen como listas. Las interacciones de tarjetas y botones son discretas y respetan la preferencia de movimiento reducido del sistema.
+
+La recuperación adapta los datos, la sesión y las comprobaciones necesarias para ejecutar el recorrido. La primera demo también se conserva en la rama `demo-modernizada`. Esta versión del repositorio incorpora el rediseño editorial para presentar mejor Recepy en el portfolio. La demostración se ejecuta en local; conservar el código en GitHub no actualiza los servicios de Firebase o Auth0 ni crea un despliegue de la aplicación.
 
 ## Dos formas de ejecutar el proyecto
 
@@ -40,7 +57,7 @@ La recuperación adapta los datos, la sesión y las comprobaciones necesarias pa
 
 En la demo, tus recetas permanecen en el almacenamiento de ese navegador y origen. No se comparten con otros visitantes ni se envían a una base de datos. Puedes limpiar las recetas locales desde la vista Mis recetas; borrar los datos del navegador también las elimina. Las imágenes admiten hasta 1 MiB y el video es una URL web opcional, no una subida de archivo. El espacio disponible depende del navegador y existe un límite adicional para la información guardada por la demo.
 
-Para probar el recorrido, pulsa `Log In` en la portada: en modo demo entra directamente, sin Google ni registro externo. Desde el interior puedes abrir el perfil superior, agregar una receta y consultar **Mis recetas** en `/home/mis-recetas`. Esa vista usa los estilos históricos de `GetUser.module.scss` para presentar únicamente tus publicaciones locales.
+Para probar el recorrido, pulsa `Entrar al recetario` en la portada: en modo demo entra directamente, sin Google ni registro externo. Desde el interior puedes abrir el perfil, agregar una receta y consultar **Mis recetas** en `/home/mis-recetas`. Esa vista presenta únicamente tus publicaciones locales y conserva el botón para borrar los datos de prueba.
 
 El modo Firebase de esta recuperación es de **solo lectura**. Publicar en la nube requiere implementar un backend que valide la identidad de Auth0 y autorice las operaciones en Firebase. Iniciar sesión en Auth0 no concede permisos en Firestore o Storage por sí solo.
 

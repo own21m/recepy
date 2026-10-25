@@ -88,7 +88,7 @@ export default function Add({ onSaved }) {
           }
         }}
       >
-        {({ isSubmitting }) => (
+        {({ isSubmitting, errors, touched }) => (
           <Form className={style.item} noValidate>
             <label htmlFor="recipe-name">Nombra tu receta</label>
             <Field
@@ -98,8 +98,16 @@ export default function Add({ onSaved }) {
               className={style.effect}
               maxLength={100}
               required
+              aria-describedby="recipe-name-error"
+              aria-invalid={Boolean(errors.name && touched.name)}
             />
-            <ErrorMessage name="name" component="p" />
+            <ErrorMessage
+              name="name"
+              component="p"
+              id="recipe-name-error"
+              className={style.validation}
+              role="alert"
+            />
 
             <label htmlFor="recipe-description">¿De qué se trata tu receta?</label>
             <Field
@@ -108,8 +116,16 @@ export default function Add({ onSaved }) {
               as="textarea"
               maxLength={6000}
               required
+              aria-describedby="recipe-description-error"
+              aria-invalid={Boolean(errors.description && touched.description)}
             />
-            <ErrorMessage name="description" component="p" />
+            <ErrorMessage
+              name="description"
+              component="p"
+              id="recipe-description-error"
+              className={style.validation}
+              role="alert"
+            />
 
             <label htmlFor="recipe-howto">¿Cómo se hace tu receta?</label>
             <Field
@@ -118,8 +134,16 @@ export default function Add({ onSaved }) {
               as="textarea"
               maxLength={6000}
               required
+              aria-describedby="recipe-howto-error"
+              aria-invalid={Boolean(errors.howTo && touched.howTo)}
             />
-            <ErrorMessage name="howTo" component="p" />
+            <ErrorMessage
+              name="howTo"
+              component="p"
+              id="recipe-howto-error"
+              className={style.validation}
+              role="alert"
+            />
 
             <label htmlFor="recipe-ingredients">¿Qué ingredientes tiene tu receta?</label>
             <Field
@@ -128,8 +152,16 @@ export default function Add({ onSaved }) {
               as="textarea"
               maxLength={6000}
               required
+              aria-describedby="recipe-ingredients-error"
+              aria-invalid={Boolean(errors.ingredients && touched.ingredients)}
             />
-            <ErrorMessage name="ingredients" component="p" />
+            <ErrorMessage
+              name="ingredients"
+              component="p"
+              id="recipe-ingredients-error"
+              className={style.validation}
+              role="alert"
+            />
 
             <label htmlFor="recipe-image">Selecciona una miniatura para tu receta</label>
             <input
@@ -140,14 +172,21 @@ export default function Add({ onSaved }) {
               onChange={fileStore}
               accept="image/jpeg,image/png,image/webp,image/gif"
               className={style.effect}
-              aria-describedby="recipe-image-note"
+              aria-describedby={
+                fileError ? "recipe-image-note recipe-image-error" : "recipe-image-note"
+              }
+              aria-invalid={Boolean(fileError)}
             />
             <p id="recipe-image-note">
               Opcional, máximo 1 MB. Si no eliges una imagen, se usará la fotografía de
               portada.
             </p>
             {fileLoading ? <p role="status">Leyendo imagen...</p> : null}
-            {fileError ? <p role="alert">{fileError}</p> : null}
+            {fileError ? (
+              <p id="recipe-image-error" role="alert" className={style.validation}>
+                {fileError}
+              </p>
+            ) : null}
             {image || fileError ? (
               <button
                 type="button"
@@ -171,11 +210,19 @@ export default function Add({ onSaved }) {
               type="url"
               className={style.effect}
               placeholder="https://..."
+              aria-describedby="recipe-video-error"
+              aria-invalid={Boolean(errors.video && touched.video)}
             />
             <p>
               Vídeo opcional en formato MP4 o WebM; la demo no sube archivos de vídeo.
             </p>
-            <ErrorMessage name="video" component="p" />
+            <ErrorMessage
+              name="video"
+              component="p"
+              id="recipe-video-error"
+              className={style.validation}
+              role="alert"
+            />
 
             <label htmlFor="recipe-type">¿De qué tipo es tu receta?</label>
             <Field
@@ -184,6 +231,8 @@ export default function Add({ onSaved }) {
               as="select"
               required
               className={style.effect}
+              aria-describedby="recipe-type-error"
+              aria-invalid={Boolean(errors.type && touched.type)}
             >
               <option value="">Elige el tipo de tu receta</option>
               {CATEGORIES.map((category) => (
@@ -192,7 +241,13 @@ export default function Add({ onSaved }) {
                 </option>
               ))}
             </Field>
-            <ErrorMessage name="type" component="p" />
+            <ErrorMessage
+              name="type"
+              component="p"
+              id="recipe-type-error"
+              className={style.validation}
+              role="alert"
+            />
             {submitError ? <p role="alert">{submitError}</p> : null}
             <button
               type="submit"

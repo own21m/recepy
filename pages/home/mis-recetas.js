@@ -2,13 +2,14 @@ import Link from "next/link";
 import Head from "next/head";
 import GetUser from "../../components/database/GetUser";
 import Footer from "../../components/content/Footer";
-import style from "../../styles/content/Main.module.scss";
+import style from "../../styles/content/Editorial.module.scss";
+import AppHeader from "../../components/content/AppHeader";
 import buttonStyle from "../../styles/auth/Login.module.scss";
 import { useState } from "react";
 import { useRecipes } from "../../components/database/RecipesProvider";
 
-// La hoja GetUser existía en 2021. Esta ruta de prueba permite consultar las
-// recetas locales propias usando esas tarjetas; no se atribuye a un componente perdido.
+// Esta ruta de la recuperación permite consultar las recetas locales propias;
+// no se atribuye a un componente perdido del proyecto original.
 export default function MyRecipes() {
   const { clearLocalRecipes, isDemo } = useRecipes();
   const [error, setError] = useState("");
@@ -17,9 +18,21 @@ export default function MyRecipes() {
       <Head>
         <title>Mis recetas - Recepy</title>
       </Head>
+      <AppHeader />
       <main className={style.content}>
-        <h1 className={style.title}>Mis recetas</h1>
-        <p className={style.text}>Recetas que has creado en este navegador.</p>
+        <section className={style.pageIntro}>
+          <div>
+            <p className={style.eyebrow}>Tus ideas, tu recetario</p>
+            <h1>
+              De tu cocina
+              <br />
+              <em>para compartir.</em>
+            </h1>
+          </div>
+          <p>
+            Recetas que has creado en este navegador. Guárdalas aquí para volver a ellas.
+          </p>
+        </section>
         <GetUser />
         {isDemo ? (
           <button

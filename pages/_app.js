@@ -2,6 +2,7 @@ import "../styles/global/style.scss";
 import { SessionProvider } from "../components/auth/Session";
 import { RecipesProvider } from "../components/database/RecipesProvider";
 import Head from "next/head";
+import ModalInteractions from "../components/content/ModalInteractions";
 
 // Estado compartido de sesión y recetas para todas las páginas de Next.js.
 export default function MyApp({ Component, pageProps }) {
@@ -27,6 +28,7 @@ export default function MyApp({ Component, pageProps }) {
           }`}</style>
         </Head>
         <Component {...pageProps} />
+        <ModalInteractions />
       </RecipesProvider>
     </SessionProvider>
   );

@@ -1,49 +1,89 @@
-//Estos son los estilos globales de la aplicacion.
-
-//Estilos basicos de body y html.
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family:
-    -apple-system,
-    BlinkMacSystemFont,
-    Segoe UI,
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    Fira Sans,
-    Droid Sans,
-    Helvetica Neue,
-    sans-serif;
-  background-color: rgb(20, 20, 20);
+:root {
+  --paper: #f6f1e7;
+  --white: #fffdf7;
+  --ink: #252a22;
+  --muted: #72776a;
+  --tomato: #ad3b2d;
+  --olive: #424f37;
+  --line: #dcdccc;
+  --serif: Georgia, "Times New Roman", serif;
+  --sans: Arial, "Helvetica Neue", sans-serif;
+  color-scheme: light;
+  scroll-behavior: smooth;
 }
-
-//Selector de elementos personalizado.
-::selection {
-  background-color: rgb(174, 0, 255);
-  color: rgb(255, 255, 255);
-}
-
-//Barra de scroll vertical 'eliminada'.
-::-webkit-scrollbar {
-  width: 5px;
-  background-color: rgb(15, 15, 15);
-}
-
-//scrollnar-thumb de el contenedor
-::-webkit-scrollbar-thumb {
-  background-color: rgb(42, 42, 42);
-  border-radius: 999px;
-}
-
-//Estilo del scrollnar-thumb al ser clickeado
-::-webkit-scrollbar-thumb:active {
-  background-color: rgba(249, 249, 249, 1);
-}
-
-//Tamaño de los elemntos determinado por el borde
 * {
   box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  padding: 0;
+  max-width: 100%;
+  overflow-x: clip;
+  font-family: var(--sans);
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--paper);
+  -webkit-font-smoothing: antialiased;
+}
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+button,
+a,
+input,
+select,
+textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: default;
+}
+svg {
+  flex: none;
+}
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--tomato);
+  outline-offset: 5px;
+}
+::selection {
+  background: var(--tomato);
+  color: var(--paper);
+}
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+  background: var(--paper);
+}
+::-webkit-scrollbar-thumb {
+  background: #b4b9a8;
+  border-radius: 20px;
+}
+body:has([role="dialog"]:target:not([data-recepy-modal])),
+body:has([role="dialog"][data-recepy-open="true"]) {
+  overflow: hidden;
+}
+img {
+  max-width: 100%;
+}
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

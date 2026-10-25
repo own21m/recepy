@@ -1,8 +1,20 @@
-# Validación de la recuperación
+# Validación de Recepy
+
+## Interfaz editorial actual
+
+La versión editorial pasó las dieciséis pruebas automatizadas: nueve de datos, validación y persistencia, una de conservación de los estilos históricos y seis del controlador de modales. ESLint terminó sin errores ni advertencias; la compilación de producción con Webpack y un trabajador generó las nueve páginas estáticas sin errores. Las siete rutas principales respondieron HTTP 200 al ejecutar la compilación local.
+
+La revisión en Chrome incluyó portada, recetario, ficha, formulario y perfil. Se comprobó la apertura del formulario desde la cabecera, el cierre con Escape y la devolución del foco al control de apertura. El catálogo también se revisó a 390 píxeles de ancho, sin desbordamiento horizontal. Las capturas actuales del README están en `docs/images/editorial`.
+
+La cobertura de pantallas, carga, errores y estados vacíos se detalla en [INTERFAZ-COMPLETA.md](INTERFAZ-COMPLETA.md); las decisiones visuales están en [DISENO-EDITORIAL.md](DISENO-EDITORIAL.md). Estos resultados corresponden al modo de demostración local y no certifican una integración real con Auth0 o Firebase.
+
+## Registro de la recuperación anterior
+
+El siguiente registro corresponde a la restauración previa al rediseño editorial y se conserva como parte de la historia del proyecto.
 
 Revisión realizada el 24 de octubre de 2026 con Node.js 24.19.0 y la configuración de demostración predeterminada.
 
-## Comprobaciones automatizadas
+### Comprobaciones automatizadas de la recuperación
 
 - Nueve pruebas de la lógica de recetas aprobadas: ejemplos, campos obligatorios, tipos de datos, categorías, URL de vídeo, persistencia, registros inválidos y límite local.
 - Una prueba adicional compara el CSS compilado de las doce hojas Sass con `original-2021`: conserva sus reglas visuales aunque se formatee el código.
@@ -12,7 +24,7 @@ Revisión realizada el 24 de octubre de 2026 con Node.js 24.19.0 y la configurac
 
 La compilación utiliza Webpack y un trabajador para reducir los picos de memoria en equipos con pocos recursos. El primer intento con Turbopack encontró un error de recursos de Windows; la configuración publicada usa la alternativa que se comprobó correctamente.
 
-## Comprobación en Chrome
+### Comprobación histórica en Chrome
 
 Se ejecutó la compilación de producción con `npm start` y se comprobó:
 

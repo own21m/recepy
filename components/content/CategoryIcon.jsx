@@ -17,7 +17,7 @@ export default function CategoryIcon({ kind }) {
       height="1em"
       viewBox="0 0 24 24"
       fill="none"
-      stroke="#f9f9f9"
+      stroke="currentColor"
       strokeWidth="1.5"
       strokeLinecap="round"
       strokeLinejoin="round"

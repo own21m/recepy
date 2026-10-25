@@ -1,19 +1,48 @@
 .button {
-  background-color: rgb(255, 255, 255);
-  border: none;
-  border-radius: 20px;
-  padding: 20px;
-  width: 30vw;
-  font-weight: bold;
-  font-size: 3vh;
-  cursor: pointer;
-  transition: 333ms;
-
-  &:hover {
-    transform: scale(1.1);
-  }
-
-  &:active {
-    background-color: rgb(200, 200, 200);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 22px;
+  min-height: 48px;
+  width: fit-content;
+  max-width: 100%;
+  padding: 15px 22px;
+  border: 1px solid var(--ink);
+  border-radius: 3px;
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1.5;
+  transition:
+    background 0.25s,
+    border-color 0.25s,
+    translate 0.25s;
+}
+.button > svg {
+  width: 18px;
+  height: 18px;
+}
+.button:hover {
+  background: var(--tomato);
+  border-color: var(--tomato);
+  translate: 0 -2px;
+}
+.button:active {
+  translate: 0 0;
+}
+.button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.feedback {
+  max-width: 40em;
+  color: var(--tomato);
+  font-size: 11px;
+  line-height: 1.8;
+}
+@media (prefers-reduced-motion: reduce) {
+  .button {
+    transition: none;
   }
 }
